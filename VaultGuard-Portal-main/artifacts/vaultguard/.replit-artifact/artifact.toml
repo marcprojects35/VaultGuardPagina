@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "VaultGuard"
+version = "1.0.0"
+id = "artifacts/vaultguard"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25390
+
+[services.development]
+run = "pnpm --filter @workspace/vaultguard run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/vaultguard", "run", "build" ]
+publicDir = "artifacts/vaultguard/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25390"
+BASE_PATH = "/"

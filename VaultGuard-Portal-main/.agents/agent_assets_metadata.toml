@@ -1,0 +1,14 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "g7IhaCETbwKcvXoe9gw3v"
+uri = "file://artifacts/vaultguard/src/assets/images/encryption_bg.png"
+type = "image"
+title = "Abstract encryption data visualization"
+
+[[generated]]
+id = "waYH9H-uyNrXCDjM8Ts7i"
+uri = "file://artifacts/vaultguard/src/assets/images/server_room.png"
+type = "image"
+title = "Hardened server room"

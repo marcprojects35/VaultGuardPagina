@@ -1,0 +1,108 @@
+VaultGuard — Descrição do Sistema
+VaultGuard é um gerenciador de senhas corporativo self-hosted, desenvolvido do zero como alternativa ao Teampass. Roda inteiramente em Docker e não depende de serviços externos.
+
+Identidade
+Nome: VaultGuard
+Subtítulo: Cofre de Senhas Corporativo
+Cor primária: #6366f1 (indigo)
+Cor de acento: #8b5cf6 (violeta)
+Fundo: #0f0f1a (tema escuro)
+Stack Técnica
+Camada	Tecnologia
+Backend	Node.js 20 + Express 5 + Prisma ORM
+Banco	PostgreSQL 16
+Frontend	React 18 + Vite + TailwindCSS
+Estado	Zustand + @tanstack/react-query
+Autenticação	JWT (8h) + TOTP + LDAP/AD
+Criptografia	AES-256-GCM (client-side) + PBKDF2 (210k iter, SHA-256)
+Deploy	Docker Compose + Nginx reverse proxy
+Módulos / Funcionalidades
+1. Autenticação e Acesso
+Login local com hash de senha
+Login via LDAP/Active Directory (configurável pela UI)
+2FA com TOTP (Google Authenticator / Authy)
+API Tokens com escopos e expiração
+Rate limiting: 20 req/15min em /auth, 200 req/min na API geral
+Sessão JWT de 8h, timeout configurável
+2. RBAC — Controle de Acesso por Papel
+6 níveis hierárquicos em ordem crescente:
+AUXILIAR → ASSISTENTE → ANALISTA → COORDENACAO → DIRETORIA → ADMINISTRADOR
+
+Permissões por pasta (granulares por usuário ou papel):
+
+canView / canEdit / canDelete / canShare
+3. Cofre de Credenciais
+Campos: título, usuário, senha (criptografada), URL, notas, tags, favicon, força da senha, data de expiração
+Campos personalizados por credencial (text / password / url), ordenáveis
+Anexos por credencial (base64, até 5 MB por arquivo)
+Favoritos por usuário
+Indicador de força de senha
+4. Pastas
+Compartilhadas: árvore hierárquica com permissões por papel/usuário (gerenciadas por admins)
+Pessoais: cada usuário tem sua própria pasta privada criada automaticamente no primeiro login; pode criar subpastas dentro do espaço pessoal
+Ícone e cor customizáveis por pasta
+5. Criptografia End-to-End por Usuário
+No login, o servidor retorna um encryptionSalt único por usuário
+O frontend deriva uma masterKey via PBKDF2 com a senha do usuário + salt (chave fica apenas em memória RAM, nunca persiste)
+Novas credenciais: v:1 AES-256-GCM com a masterKey
+Credenciais antigas (v:0 base64): backward-compatible, seguem funcionando
+6. Exportação e Importação de Cofre
+Exportar cofre criptografado (.vaultguard): decrypt local → re-encrypt com passphrase própria (AES-256-GCM + PBKDF2)
+Importar cofre (.vaultguard): decrypt com passphrase → re-encrypt com masterKey do usuário
+Exportar CSV sem senhas (para relatório/auditoria)
+7. Busca
+Página de busca full-text por título, usuário, URL e tags
+8. Auditoria Completa
+Log de todas as ações (criação, edição, exclusão, login, logout, exportação)
+Campos: usuário, ação, recurso, IP, user-agent, timestamp
+Painel de auditoria exclusivo para ADMINISTRADOR
+9. Administração
+Gestão de usuários (criar, editar, ativar/desativar, alterar papel)
+Criação automática de pasta pessoal ao criar usuário
+Gestão de pastas compartilhadas (árvore, permissões)
+Configuração LDAP/AD via interface (sem arquivo de config)
+Configurações gerais: nome do site, logo, idioma padrão, auto-registro, obrigatoriedade 2FA
+Configurações de segurança: timeout de sessão, máximo de tentativas de login, política de senhas
+Configurações de e-mail (SMTP)
+Aparência: cores, logo, favicon personalizáveis
+10. Extensão de Navegador (Chrome/Edge)
+Manifesto V3
+Popup para busca rápida de credenciais
+Content script com autofill automático em formulários de login
+Service worker em background para comunicação com a API
+Permissões: storage, activeTab, scripting, tabs
+11. Internacionalização (i18n)
+28 idiomas incluídos: pt-BR, en-US, es, fr, de, it, ja, ko, zh-CN, zh-TW, ar, he, fa (RTL suportado), ru, uk, pl, nl, sv, no, da, fi, tr, hi, id, ms, vi, th, ro
+Modelo de Dados (Entidades principais)
+User — usuário com salt de criptografia, fonte de auth (local/LDAP), TOTP
+Folder — pasta com suporte a hierarquia (parentId), personalizada ou compartilhada
+FolderPermission — permissão por usuário ou papel em uma pasta
+Credential — credencial vinculada a pasta, com campos e anexos
+CredentialField — campo personalizado da credencial
+Attachment — arquivo anexado à credencial (base64)
+SystemSettings — singleton de configuração do sistema (inclui LDAP e SMTP em JSON criptografado)
+ApiToken — tokens de API com escopos e expiração
+Favorite — favoritos por usuário
+AuditLog — log de auditoria completo
+Deploy
+
+docker compose up -d
+Porta padrão: 80 (configurável via HTTP_PORT)
+Acesso direto à API: porta 3001
+Credenciais padrão (seed): admin@vaultguard.local / Admin@123456
+Variáveis obrigatórias: DATABASE_URL, JWT_SECRET
+Config LDAP: feita pela UI, salva no banco
+Rotas da API (resumo)
+Prefixo	Descrição
+/api/auth	Login, 2FA, refresh, logout
+/api/users	CRUD de usuários
+/api/folders	Pastas e permissões
+/api/credentials	CRUD de credenciais + vault-export
+/api/attachments	Upload/download/remoção de anexos
+/api/tokens	API Tokens
+/api/favorites	Favoritos
+/api/audit	Logs de auditoria
+/api/ldap	Config e teste de LDAP
+/api/settings	Configurações do sistema
+/api/health	Health check
+Essa descrição cobre toda a arquitetura, funcionalidades, segurança e deploy do sistema. Pode ser usada para criar uma landing page, documentação técnica ou página de apresentação para download.
