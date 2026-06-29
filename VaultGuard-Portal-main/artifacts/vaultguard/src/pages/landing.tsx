@@ -454,7 +454,7 @@ function DockerDeploy() {
             Suba em Segundos.
           </h2>
           <p className="text-xl text-muted-foreground mb-12">
-            Arquitetura inteiramente conteinerizada. Nenhuma dependência externa, nenhum SaaS terceirizado. O controle total dos seus dados com um único comando.
+            Arquitetura inteiramente conteinerizada. Nenhuma dependência externa, nenhum SaaS terceirizado. O controle total dos seus dados em minutos — com um assistente interativo que cuida de tudo.
           </p>
 
           <div className="text-left bg-[#0a0a0f] border border-white/10 rounded-xl overflow-hidden shadow-2xl">
@@ -468,21 +468,30 @@ function DockerDeploy() {
               <div className="text-muted-foreground mb-2"># Clone o repositório</div>
               <div>
                 <span className="text-green-400">user@server</span><span className="text-white">:</span><span className="text-blue-400">~</span><span className="text-white">$ </span>
-                <span className="text-white">git clone https://github.com/company/vaultguard.git</span>
+                <span className="text-white">git clone https://github.com/marcprojects35/VaultGuard.git</span>
               </div>
-              <div className="text-muted-foreground mt-4 mb-2"># Inicie a stack (App, Postgres, Nginx)</div>
+              <div className="text-muted-foreground mt-4 mb-2"># Execute o assistente de instalação</div>
               <div>
-                <span className="text-green-400">user@server</span><span className="text-white">:</span><span className="text-blue-400">~/vaultguard</span><span className="text-white">$ </span>
-                <span className="text-primary font-bold">docker compose up -d</span>
+                <span className="text-green-400">user@server</span><span className="text-white">:</span><span className="text-blue-400">~/VaultGuard</span><span className="text-white">$ </span>
+                <span className="text-primary font-bold">bash install.sh</span>
               </div>
               <div className="text-muted-foreground mt-4">
-                Creating vaultguard_db_1 ... <span className="text-green-400">done</span><br/>
-                Creating vaultguard_api_1 ... <span className="text-green-400">done</span><br/>
-                Creating vaultguard_web_1 ... <span className="text-green-400">done</span><br/>
-                Creating vaultguard_nginx_1 ... <span className="text-green-400">done</span>
+                <span className="text-blue-400">▶</span>  1/6 — Verificando pré-requisitos<br/>
+                <span className="text-green-400">✓</span>  Docker instalado e configurado<br/>
+                <span className="text-blue-400">▶</span>  2/6 — Dados da empresa<br/>
+                <span className="text-blue-400">▶</span>  3/6 — Configuração de rede<br/>
+                <span className="text-blue-400">▶</span>  4/6 — Gerando configuração (.env)<br/>
+                <span className="text-blue-400">▶</span>  5/6 — Build e inicialização ...<br/>
+                <span className="text-blue-400">▶</span>  6/6 — Aguardando health check<br/>
+              </div>
+              <div className="mt-3 border border-green-400/30 rounded p-2 text-green-400 text-xs">
+                ╔══════════════════════════════════════╗<br/>
+                ║  VaultGuard instalado com sucesso!   ║<br/>
+                ║  http://192.168.1.10                 ║<br/>
+                ╚══════════════════════════════════════╝
               </div>
               <div className="mt-4 flex items-center gap-2">
-                <span className="text-green-400">user@server</span><span className="text-white">:</span><span className="text-blue-400">~/vaultguard</span><span className="text-white">$ </span>
+                <span className="text-green-400">user@server</span><span className="text-white">:</span><span className="text-blue-400">~/VaultGuard</span><span className="text-white">$ </span>
                 <span className="w-2 h-5 bg-white/80 animate-pulse" />
               </div>
             </div>
@@ -738,22 +747,25 @@ function Footer() {
 
           <div className="bg-secondary/50 rounded-2xl p-6 border border-white/5">
             <h4 className="font-semibold mb-4 flex items-center gap-2">
-              <Key className="w-4 h-4 text-primary" /> Credenciais Iniciais de Sistema
+              <Key className="w-4 h-4 text-primary" /> Credenciais de Acesso
             </h4>
             <div className="space-y-3 font-mono text-sm">
               <div className="flex justify-between items-center p-3 rounded bg-background border border-white/5">
                 <span className="text-muted-foreground">Admin Email:</span>
-                <span className="text-white">admin@vaultguard.local</span>
+                <span className="text-primary">definido no install.sh</span>
               </div>
               <div className="flex justify-between items-center p-3 rounded bg-background border border-white/5">
                 <span className="text-muted-foreground">Admin Password:</span>
-                <span className="text-white">Admin@123456</span>
+                <span className="text-primary">gerado no install.sh</span>
               </div>
               <div className="flex justify-between items-center p-3 rounded bg-background border border-white/5">
                 <span className="text-muted-foreground">Health Check:</span>
                 <span className="text-green-400">GET /api/health</span>
               </div>
             </div>
+            <p className="text-xs text-muted-foreground mt-3 leading-relaxed">
+              O <span className="text-white font-semibold">install.sh</span> solicita e-mail, senha e nome da empresa durante a instalação. A senha pode ser gerada automaticamente.
+            </p>
           </div>
         </div>
 
